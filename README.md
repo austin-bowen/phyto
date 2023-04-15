@@ -37,3 +37,18 @@ following libraries in the `lib` directory, copied from the
   - adafruit_register
 
 On startup, the XIAO runs the `code.py` script.
+
+## Setup
+
+1. Install CircuitPython on the XIAO RP2040 microcontroller.
+2. Clone this repository and `cd` into it.
+3. Copy code onto the XIAO: `python3 copy2mcu.py`
+
+### Local Development
+
+1. Create a Python3 virtual environment:
+   1. `python3 -m venv venv`
+   2. `. venv/bin/activate`
+2. Install dependencies:
+   1. `pip install -U pip`
+   2. `pip install -r requirements.txt`
