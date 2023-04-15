@@ -1,6 +1,2 @@
-def main():
-    while True:
-        pass
-
-
-main()
+import phyto
+phyto.main()
