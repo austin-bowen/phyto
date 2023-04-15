@@ -1,0 +1,2 @@
+adafruit-circuitpython-motor < 4.0
+adafruit-circuitpython-pca9685 < 4.0
