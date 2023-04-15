@@ -29,7 +29,11 @@ several directional light sensors to help Phyto seek out well-lit areas.
 ## Software
 
 The XIAO RP2040 is running [CircuitPython](https://circuitpython.org/) with the
-following libraries in the `lib` directory:
-- TODO
+following libraries in the `lib` directory, copied from the
+[Adafruit CircuitPython Bundle](https://github.com/adafruit/Adafruit_CircuitPython_Bundle):
+- adafruit_motor
+- adafruit_pca9685
+  - adafruit_bus_device
+  - adafruit_register
 
 On startup, the XIAO runs the `code.py` script.
