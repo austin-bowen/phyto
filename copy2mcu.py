@@ -12,9 +12,9 @@ FILES_TO_COPY = (
     'lib/adafruit_motor/*',
     'lib/adafruit_pca9685.mpy',
     'lib/adafruit_register/*',
-    'lib/phyto/**',
     'lib/README.txt',
     'lib/VERSIONS.txt',
+    'phyto/**',
     'README.md',
 )
 
