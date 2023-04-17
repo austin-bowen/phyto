@@ -29,7 +29,10 @@ class Base:
 
     @property
     def legs(self) -> Sequence[Leg]:
-        return tuple(*self.left_legs, *self.right_legs)
+        legs = []
+        legs.extend(self.left_legs)
+        legs.extend(self.right_legs)
+        return legs
 
     def rest(self, speed: float) -> None:
         for leg in self.legs:
