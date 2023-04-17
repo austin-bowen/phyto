@@ -94,8 +94,10 @@ class Leg:
             servo.angle = angle
 
     def rest(self, speed: float) -> None:
-        # TODO
-        ...
+        # TODO Go to rest position
+
+        for servo in self.servos:
+            servo.angle = None
 
     def stand(self, speed: float, height: float) -> None:
         # TODO

@@ -26,6 +26,22 @@ def get_servo_controller(
 
 
 class ServoController:
+    @property
+    def channel_count(self) -> int:
+        return self.get_channel_count()
+
+    @abstractmethod
+    def __enter__(self) -> 'ServoController':
+        ...
+
+    @abstractmethod
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        ...
+
+    @abstractmethod
+    def get_channel_count(self) -> int:
+        ...
+
     @abstractmethod
     def get_servo(self, channel: Channel) -> Servo:
         ...
@@ -33,8 +49,17 @@ class ServoController:
     def get_servos(self, *channels: int) -> Sequence[Servo]:
         return tuple(self.get_servo(channel) for channel in channels)
 
+    def disable(self) -> None:
+        """Disables all servos."""
+        for channel in range(self.channel_count):
+            servo = self.get_servo(channel)
+            servo.angle = None
+
 
 class PCA9685ServoController(PCA9685, ServoController):
+    def get_channel_count(self) -> int:
+        return 16
+
     def get_servo(self, channel: Channel) -> Servo:
         return Servo(self.channels[channel])
 
@@ -48,6 +73,18 @@ class DualServoController(ServoController):
     def __init__(self, servo_controller_0: ServoController, servo_controller_1: ServoController):
         self.servo_controller_0 = servo_controller_0
         self.servo_controller_1 = servo_controller_1
+
+    def __enter__(self) -> 'ServoController':
+        self.servo_controller_0.__enter__()
+        self.servo_controller_1.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.servo_controller_0.__exit__(exc_type, exc_val, exc_tb)
+        self.servo_controller_1.__exit__(exc_type, exc_val, exc_tb)
+
+    def get_channel_count(self) -> int:
+        return 32
 
     def get_servo(self, channel: Channel) -> Servo:
         if 0 <= channel < 16:
