@@ -165,20 +165,23 @@ def copy_files(
         message += ' (DRY RUN)'
 
     print(message)
+    copied, skipped = 0, 0
     for file_stem in src_file_stems:
         src_file = src_path / file_stem
         device_file = device_path / file_stem
 
         if files_are_equal(src_file, device_file):
             print(f'{file_stem} (skipped)')
+            skipped += 1
             continue
 
         print(file_stem)
+        copied += 1
         if not dry_run:
             device_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src_file, device_file)
 
-    print(f'Copied {len(src_file_stems)} files.')
+    print(f'Copied {copied}/{len(src_file_stems)} files ({skipped} skipped).')
 
 
 def files_are_equal(src_file: Path, dst_file: Path) -> bool:
