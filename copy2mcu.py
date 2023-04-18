@@ -1,13 +1,9 @@
-try:
-    from typing import Sequence, Set, Iterable
-except ImportError:
-    pass
-
 import argparse
 import os
 import shutil
 from glob import iglob
 from pathlib import Path
+from typing import Iterable, Sequence, Set
 
 FILES_TO_COPY = (
     'code.py',
@@ -173,12 +169,29 @@ def copy_files(
         src_file = src_path / file_stem
         device_file = device_path / file_stem
 
+        if files_are_equal(src_file, device_file):
+            print(f'{file_stem} (skipped)')
+            continue
+
         print(file_stem)
         if not dry_run:
             device_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src_file, device_file)
 
     print(f'Copied {len(src_file_stems)} files.')
+
+
+def files_are_equal(src_file: Path, dst_file: Path) -> bool:
+    if not dst_file.exists():
+        return False
+
+    src_file_stat = src_file.stat()
+    dst_file_stat = dst_file.stat()
+
+    return (
+            src_file_stat.st_mtime <= dst_file_stat.st_mtime
+            and src_file_stat.st_size == dst_file_stat.st_size
+    )
 
 
 if __name__ == '__main__':
