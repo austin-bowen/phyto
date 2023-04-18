@@ -1,9 +1,13 @@
+try:
+    from typing import Sequence, Set, Iterable
+except ImportError:
+    pass
+
 import argparse
 import os
 import shutil
 from glob import iglob
 from pathlib import Path
-from typing import Sequence, Set, Iterable
 
 FILES_TO_COPY = (
     'code.py',

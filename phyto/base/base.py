@@ -1,5 +1,9 @@
+try:
+    from typing import Sequence
+except ImportError:
+    pass
+
 import time
-from typing import Sequence
 
 from phyto.base.leg import Leg, get_legs
 from phyto.base.servo_controller import ServoController

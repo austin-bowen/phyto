@@ -1,4 +1,7 @@
-from typing import Sequence, Tuple, Optional
+try:
+    from typing import Sequence, Tuple, Optional
+except ImportError:
+    pass
 
 from adafruit_motor.servo import Servo
 

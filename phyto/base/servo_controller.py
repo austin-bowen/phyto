@@ -1,5 +1,9 @@
+try:
+    from typing import Sequence
+except ImportError:
+    pass
+
 from abc import abstractmethod
-from typing import Sequence
 
 from adafruit_motor.servo import Servo
 from adafruit_pca9685 import PCA9685
