@@ -61,6 +61,7 @@ def get_right_front_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_front',
         servos=servo_controller.get_servos(6, 7, 11),
+        # angles = (85, 21, 46)
     )
 
 
@@ -68,6 +69,7 @@ def get_right_middle_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_middle',
         servos=servo_controller.get_servos(3, 4, 5),
+        # angles = (90, 15, 47)
     )
 
 
@@ -75,6 +77,7 @@ def get_right_back_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_back',
         servos=servo_controller.get_servos(0, 1, 2),
+        # angles = (74, 20, 55)
     )
 
 
