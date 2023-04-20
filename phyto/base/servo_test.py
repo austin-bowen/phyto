@@ -1,19 +1,18 @@
-from busio import I2C
-
 from phyto import config
-from phyto.base.servo_controller import get_servo_controller
+from phyto.base.servo_controller import get_servo_controller, ServoController
+from phyto.i2c import get_i2c_bus
 from phyto.types import Pin, I2cAddress
 
 
 def servo_test(
-        i2c_bus_sda: Pin = config.I2C_BUS_SDA,
         i2c_bus_scl: Pin = config.I2C_BUS_SCL,
+        i2c_bus_sda: Pin = config.I2C_BUS_SDA,
         i2c_bus_freq: int = config.I2C_BUS_FREQ,
         pca9685_0_i2c_address: I2cAddress = config.PCA9685_0_I2C_ADDRESS,
         pca9685_1_i2c_address: I2cAddress = config.PCA9685_1_I2C_ADDRESS,
         pca9685_pwm_freq: int = config.PCA9685_PWM_FREQ,
 ) -> None:
-    i2c_bus = I2C(i2c_bus_sda, i2c_bus_scl, frequency=i2c_bus_freq)
+    i2c_bus = get_i2c_bus(i2c_bus_scl, i2c_bus_sda, i2c_bus_freq)
 
     servo_controller = get_servo_controller(
         i2c_bus,
@@ -22,6 +21,11 @@ def servo_test(
         pca9685_pwm_freq,
     )
 
+    with i2c_bus, servo_controller:
+        run(servo_controller)
+
+
+def run(servo_controller: ServoController) -> None:
     channel = 0
     servo = servo_controller.get_servo(channel)
 

@@ -1,10 +1,7 @@
-from time import sleep
-
-from busio import I2C
-
 from phyto import config
 from phyto.base import get_base
 from phyto.base.servo_controller import get_servo_controller
+from phyto.i2c import get_i2c_bus
 from phyto.types import I2cAddress, Pin
 
 
@@ -27,15 +24,6 @@ def main(
 
     base = get_base(servo_controller)
 
-    while True:
-        base.step(speed=1., direction=0.)
-
-
-def get_i2c_bus(scl: Pin, sda: Pin, freq: int):
-    while True:
-        try:
-            return I2C(scl, sda, frequency=freq)
-        except RuntimeError as e:
-            print(f'Error creating I2C bus; error={e}')
-            print('Retrying...')
-            sleep(1)
+    with i2c_bus, servo_controller:
+        while True:
+            base.step(speed=1., direction=0.)
