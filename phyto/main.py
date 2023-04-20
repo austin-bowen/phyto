@@ -1,5 +1,6 @@
 from phyto import config
 from phyto.base import get_base
+from phyto.base.base import Base
 from phyto.base.servo_controller import get_servo_controller
 from phyto.i2c import get_i2c_bus
 from phyto.types import I2cAddress, Pin
@@ -25,5 +26,16 @@ def main(
     base = get_base(servo_controller)
 
     with i2c_bus, servo_controller:
-        while True:
-            base.step(speed=1., direction=0.)
+        run(base)
+
+
+def run(base: Base) -> None:
+    while True:
+        command = input('command (stand, rest): ')
+
+        if command == 'stand':
+            base.stand(1.0, 0.0)
+        elif command == 'rest':
+            base.rest(1.0)
+        else:
+            print(f'invalid command: {command}')

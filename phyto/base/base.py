@@ -46,13 +46,13 @@ class Base:
         print(f'rest: speed={speed}')
         time.sleep(1)
 
+    def disable(self) -> None:
+        for leg in self.legs:
+            leg.disable()
+
     def stand(self, speed: float, height: float) -> None:
         for leg in self.legs:
             leg.stand(speed, height)
-
-        # TODO
-        print(f'stand: speed={speed}, height={height}')
-        time.sleep(1)
 
     def step(self, speed: float, direction: float) -> None:
         # TODO
