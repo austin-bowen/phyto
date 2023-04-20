@@ -31,42 +31,42 @@ def get_legs(
 def get_left_front_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='left_front',
-        servos=servo_controller.get_servos(22, 23, 27),
+        servos=servo_controller.get_servos(25, 24, 15),
     )
 
 
 def get_left_middle_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='left_middle',
-        servos=servo_controller.get_servos(19, 20, 21),
+        servos=servo_controller.get_servos(28, 27, 26),
     )
 
 
 def get_left_back_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='left_back',
-        servos=servo_controller.get_servos(16, 17, 18),
+        servos=servo_controller.get_servos(31, 30, 29),
     )
 
 
 def get_right_front_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_front',
-        servos=servo_controller.get_servos(9, 8, 31),
+        servos=servo_controller.get_servos(6, 7, 11),
     )
 
 
 def get_right_middle_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_middle',
-        servos=servo_controller.get_servos(12, 11, 10),
+        servos=servo_controller.get_servos(3, 4, 5),
     )
 
 
 def get_right_back_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_back',
-        servos=servo_controller.get_servos(15, 14, 13),
+        servos=servo_controller.get_servos(0, 1, 2),
     )
 
 
