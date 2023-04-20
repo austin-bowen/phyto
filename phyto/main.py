@@ -14,19 +14,15 @@ def main(
         pca9685_1_i2c_address: I2cAddress = config.PCA9685_1_I2C_ADDRESS,
         pca9685_pwm_freq: int = config.PCA9685_PWM_FREQ,
 ):
-    i2c_bus = get_i2c_bus(i2c_bus_scl, i2c_bus_sda, i2c_bus_freq)
-
-    servo_controller = get_servo_controller(
-        i2c_bus,
-        pca9685_0_i2c_address,
-        pca9685_1_i2c_address,
-        pca9685_pwm_freq,
-    )
-
-    base = get_base(servo_controller)
-
-    with i2c_bus, servo_controller:
-        run(base)
+    with get_i2c_bus(i2c_bus_scl, i2c_bus_sda, i2c_bus_freq) as i2c_bus:
+        with get_servo_controller(
+                i2c_bus,
+                pca9685_0_i2c_address,
+                pca9685_1_i2c_address,
+                pca9685_pwm_freq,
+        ) as servo_controller:
+            base = get_base(servo_controller)
+            run(base)
 
 
 def run(base: Base) -> None:
