@@ -1,5 +1,5 @@
 try:
-    from typing import Sequence, Optional, Type
+    from typing import Sequence
 except ImportError:
     pass
 
