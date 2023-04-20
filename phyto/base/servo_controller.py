@@ -1,5 +1,5 @@
 try:
-    from typing import Sequence
+    from typing import Sequence, Optional, Type
 except ImportError:
     pass
 
@@ -61,6 +61,10 @@ class ServoController:
 
 
 class PCA9685ServoController(PCA9685, ServoController):
+    def __exit__(self, exception_type, exception_value, traceback) -> None:
+        self.disable()
+        PCA9685.__exit__(self, exception_type, exception_value, traceback)
+
     def get_channel_count(self) -> int:
         return 16
 
