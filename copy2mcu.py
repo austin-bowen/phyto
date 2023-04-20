@@ -191,8 +191,10 @@ def files_are_equal(src_file: Path, dst_file: Path) -> bool:
     src_file_stat = src_file.stat()
     dst_file_stat = dst_file.stat()
 
+    src_newer_by_seconds = src_file_stat.st_mtime - dst_file_stat.st_mtime
+
     return (
-            src_file_stat.st_mtime <= dst_file_stat.st_mtime
+            src_newer_by_seconds < 2.
             and src_file_stat.st_size == dst_file_stat.st_size
     )
 
