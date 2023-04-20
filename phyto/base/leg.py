@@ -1,13 +1,13 @@
 try:
     from typing import Sequence, Tuple, Optional
+
+    ServoAngle = Optional[float]
 except ImportError:
     pass
 
 from adafruit_motor.servo import Servo
 
 from phyto.base.servo_controller import ServoController
-
-ServoAngle = Optional[float]
 
 
 def get_legs(
@@ -83,7 +83,7 @@ class Leg:
         self.servos = servos
 
     def __repr__(self) -> str:
-        return f'Leg(id={self.id!r})'
+        return f'Leg(id={repr(self.id)})'
 
     @property
     def angles(self) -> Tuple[ServoAngle, ...]:

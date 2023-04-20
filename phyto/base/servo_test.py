@@ -5,7 +5,7 @@ from phyto.base.servo_controller import get_servo_controller
 from phyto.types import Pin, I2cAddress
 
 
-def main(
+def servo_test(
         i2c_bus_sda: Pin = config.I2C_BUS_SDA,
         i2c_bus_scl: Pin = config.I2C_BUS_SCL,
         i2c_bus_freq: int = config.I2C_BUS_FREQ,
@@ -43,8 +43,4 @@ def main(
             else:
                 servo.angle = int(command)
         except Exception as e:
-            print(f'Invalid command={command!r}; error={e}')
-
-
-if __name__ == '__main__':
-    main()
+            print(f'Invalid command={repr(command)}; error={e}')

@@ -8,6 +8,7 @@ from typing import Iterable, Sequence, Set
 FILES_TO_COPY = (
     'code.py',
     'LICENSE',
+    'lib/abc.py',
     'lib/adafruit_bus_device/*',
     'lib/adafruit_motor/*',
     'lib/adafruit_pca9685.mpy',

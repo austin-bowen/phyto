@@ -1,4 +1,8 @@
-from adafruit_blinka.microcontroller import generic_micropython
-
 I2cAddress = int
-Pin = generic_micropython.Pin
+
+try:
+    from adafruit_blinka.microcontroller import generic_micropython
+
+    Pin = generic_micropython.Pin
+except ImportError:
+    Pin = ...
