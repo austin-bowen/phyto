@@ -6,3 +6,6 @@ try:
     Pin = generic_micropython.Pin
 except ImportError:
     Pin = ...
+
+Angle = float
+Length = float
