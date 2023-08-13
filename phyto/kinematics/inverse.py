@@ -43,29 +43,47 @@ class InverseSolver2Dof:
 
 
 class InverseSolver3Dof:
+    l0: Length
+
     _solver_2dof: InverseSolver2Dof
 
-    def __init__(self, l0: Length, l1: Length):
-        self._solver_2dof = InverseSolver2Dof(l0, l1)
-
-    @property
-    def l0(self) -> Length:
-        return self._solver_2dof.l0
+    def __init__(self, l0: Length, l1: Length, l2: Length):
+        self.l0 = l0
+        self._solver_2dof = InverseSolver2Dof(l1, l2)
 
     @property
     def l1(self) -> Length:
+        return self._solver_2dof.l0
+
+    @l1.setter
+    def l1(self, l1: Length) -> None:
+        self._solver_2dof.l0 = l1
+
+    @property
+    def l2(self) -> Length:
         return self._solver_2dof.l1
+
+    @l2.setter
+    def l2(self, l2: Length) -> None:
+        self._solver_2dof.l1 = l2
 
     def solve(self, x: float, y: float, z: float) -> Tuple[Angle, Angle, Angle]:
         theta0 = self._solve_theta0(x, y)
-        theta1, theta2 = self._solve_theta1_2(x, y, z)
+        try:
+            theta1, theta2 = self._solve_theta1_2(x, y, z)
+        except NoSolution:
+            raise NoSolution(
+                f'No solution for x={x}, y={y}, z={z} with '
+                f'link lengths l0={self.l0}, l1={self.l1}, l2={self.l2}.'
+            )
+
         return theta0, theta1, theta2
 
     def _solve_theta0(self, x: float, y: float) -> Angle:
         return math.atan2(y, x)
 
     def _solve_theta1_2(self, x: float, y: float, z: float) -> Tuple[Angle, Angle]:
-        x_proj = math.sqrt(x ** 2 + y ** 2)
+        x_proj = math.sqrt(x ** 2 + y ** 2) - self.l0
         y_proj = z
 
         return self._solver_2dof.solve(x_proj, y_proj)

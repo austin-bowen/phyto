@@ -36,13 +36,13 @@ class InverseSolver2DofTest(TestCase):
 
 class InverseSolver3DofTest(TestCase):
     def setUp(self) -> None:
-        self.solver = InverseSolver3Dof(1, 1)
+        self.solver = InverseSolver3Dof(0.5, 1, 1)
 
     @parameterized.expand([
-        (2, 0, 0, 0, 0, 0),
-        (1, 0, -1, 0, 0, -pi / 2),
-        (0, 2, 0, pi / 2, 0, 0),
-        (0, 0, 2, 0, pi / 2, 0),
+        (2.5, 0, 0, 0, 0, 0),
+        (1.5, 0, -1, 0, 0, -pi / 2),
+        (0, 2.5, 0, pi / 2, 0, 0),
+        (.5, 0, 2, 0, pi / 2, 0),
     ])
     def test_solve(self, x: float, y: float, z: float, theta0: Angle, theta1: Angle, theta2: Angle):
         actual_theta0, actual_theta1, actual_theta2 = self.solver.solve(x, y, z)
@@ -51,8 +51,8 @@ class InverseSolver3DofTest(TestCase):
         self.assertAlmostEqual(theta2, actual_theta2)
 
     @parameterized.expand([
-        (2.001, 0, 0),
-        (0, -2.001, 0),
+        (2.501, 0, 0),
+        (0, -2.501, 0),
         (0, 0, 2.001),
     ])
     def test_no_solution(self, x: float, y: float, z: float):
