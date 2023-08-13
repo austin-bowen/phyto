@@ -15,28 +15,60 @@ class InverseSolver2Dof:
     Based on: https://www.osrobotics.org/osr/kinematics/inverse_kinematics.html
     """
 
-    def __init__(self, l1: Length, l2: Length):
+    l0: Length
+    l1: Length
+
+    def __init__(self, l0: Length, l1: Length):
+        self.l0 = l0
         self.l1 = l1
-        self.l2 = l2
 
     def solve(self, x: float, y: float) -> Tuple[Angle, Angle]:
-        theta2 = self._solve_theta2(x, y)
-        theta1 = self._solve_theta1(x, y, theta2)
-        return theta1, theta2
+        theta1 = self._solve_theta1(x, y)
+        theta0 = self._solve_theta0(x, y, theta1)
+        return theta0, theta1
 
-    def _solve_theta2(self, x: float, y: float) -> Angle:
-        numerator = x ** 2 + y ** 2 - self.l1 ** 2 - self.l2 ** 2
-        denominator = 2 * self.l1 * self.l2
+    def _solve_theta1(self, x: float, y: float) -> Angle:
+        numerator = x ** 2 + y ** 2 - self.l0 ** 2 - self.l1 ** 2
+        denominator = 2 * self.l0 * self.l1
 
         try:
             return -math.acos(numerator / denominator)
         except ValueError:
-            raise NoSolution(f'No solution for x={x}, y={y} with link lengths l1={self.l1}, l2={self.l2}.')
+            raise NoSolution(f'No solution for x={x}, y={y} with link lengths l0={self.l0}, l1={self.l1}.')
 
-    def _solve_theta1(self, x: float, y: float, theta2: Angle) -> Angle:
-        k1 = self.l1 + self.l2 * math.cos(theta2)
-        k2 = self.l2 * math.sin(theta2)
+    def _solve_theta0(self, x: float, y: float, theta1: Angle) -> Angle:
+        k1 = self.l0 + self.l1 * math.cos(theta1)
+        k2 = self.l1 * math.sin(theta1)
         return math.atan2(y, x) - math.atan2(k2, k1)
+
+
+class InverseSolver3Dof:
+    _solver_2dof: InverseSolver2Dof
+
+    def __init__(self, l0: Length, l1: Length):
+        self._solver_2dof = InverseSolver2Dof(l0, l1)
+
+    @property
+    def l0(self) -> Length:
+        return self._solver_2dof.l0
+
+    @property
+    def l1(self) -> Length:
+        return self._solver_2dof.l1
+
+    def solve(self, x: float, y: float, z: float) -> Tuple[Angle, Angle, Angle]:
+        theta0 = self._solve_theta0(x, y)
+        theta1, theta2 = self._solve_theta1_2(x, y, z)
+        return theta0, theta1, theta2
+
+    def _solve_theta0(self, x: float, y: float) -> Angle:
+        return math.atan2(y, x)
+
+    def _solve_theta1_2(self, x: float, y: float, z: float) -> Tuple[Angle, Angle]:
+        x_proj = math.sqrt(x ** 2 + y ** 2)
+        y_proj = z
+
+        return self._solver_2dof.solve(x_proj, y_proj)
 
 
 class NoSolution(Exception):
