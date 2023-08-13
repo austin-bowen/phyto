@@ -19,6 +19,11 @@ FILES_TO_COPY = (
     'README.md',
 )
 
+FILES_TO_EXCLUDE = (
+    '**/__pycache__/**',
+    'phyto/**/test_*.py',
+)
+
 
 def main():
     args = get_args()
@@ -71,15 +76,17 @@ def dir_path_type(path: str) -> Path:
 def copy2mcu(
         src_path: Path,
         device_path: Path,
-        file_patterns: Sequence[str] = FILES_TO_COPY,
+        copy_file_patterns: Sequence[str] = FILES_TO_COPY,
+        exclude_file_patterns: Sequence[str] = FILES_TO_EXCLUDE,
         dry_run: bool = False,
         confirmed: bool = False,
 ) -> None:
     print('Source path:', src_path)
     print('Device path:', device_path)
 
-    src_file_stems = get_file_stems(src_path, file_patterns)
-    device_file_stems = get_file_stems(device_path, file_patterns)
+    src_file_stems = get_file_stems(src_path, copy_file_patterns)
+    src_file_stems -= get_file_stems(src_path, exclude_file_patterns)
+    device_file_stems = get_file_stems(device_path, copy_file_patterns)
 
     print()
     remove_device_files_not_found_in_src(
