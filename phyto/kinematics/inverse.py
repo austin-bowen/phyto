@@ -73,7 +73,7 @@ class InverseSolver3Dof:
             theta1, theta2 = self._solve_theta1_2(x, y, z)
         except NoSolution:
             raise NoSolution(
-                f'No solution for x={x}, y={y}, z={z} with '
+                f'No solution for x={x}, y={y}, z={z} with ' +
                 f'link lengths l0={self.l0}, l1={self.l1}, l2={self.l2}.'
             )
 
