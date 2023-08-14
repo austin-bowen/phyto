@@ -2,8 +2,11 @@ I2cAddress = int
 
 try:
     from typing import Callable
+
+    TimeFunc = Callable[[], float]
 except ImportError:
     Callable = ...
+    TimeFunc = ...
 
 try:
     from adafruit_blinka.microcontroller import generic_micropython
@@ -15,8 +18,6 @@ except ImportError:
 
 Angle = float
 Length = float
-
-TimeFunc = Callable[[], float]
 
 
 class Point3D:

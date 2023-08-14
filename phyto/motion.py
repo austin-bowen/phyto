@@ -59,6 +59,7 @@ class PositionSmoother:
     @target.setter
     def target(self, target: Point3D) -> None:
         self._target = target
+        self._t_last_update = self.time_func()
 
     @property
     def at_target(self) -> bool:

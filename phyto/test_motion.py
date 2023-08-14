@@ -10,7 +10,7 @@ class PositionSmootherTest(TestCase):
         self.smoother = PositionSmoother(
             position=Point3D(0, 0, 0),
             speed=0.5,
-            time_func=FakeTimeFunc(0., 1., 2., 3., 4., 5., 6., 7., 8., 9.),
+            time_func=FakeTimeFunc(0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10.),
         )
 
     def test_position(self):
