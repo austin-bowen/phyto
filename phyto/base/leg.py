@@ -1,20 +1,30 @@
+import math
 from time import sleep
-
-try:
-    from typing import Sequence, Tuple, Optional
-
-    ServoAngle = Optional[float]
-except ImportError:
-    pass
 
 from adafruit_motor.servo import Servo
 
 from phyto.base.servo_controller import ServoController
 
+try:
+    from typing import Tuple, Optional
+
+    ServoAngle = Optional[float]
+    LegGroup = Tuple['Leg', 'Leg', 'Leg']
+    LegServos = Tuple[Servo, Servo, Servo]
+except ImportError:
+    Tuple = ...
+    Optional = ...
+
+    ServoAngle = ...
+    LegGroup = ...
+    LegServos = ...
+
+ANGLE_FROM_BASE: float = math.radians(54.2)
+
 
 def get_legs(
         servo_controller: ServoController,
-) -> Tuple[Sequence['Leg'], Sequence['Leg']]:
+) -> Tuple[LegGroup, LegGroup]:
     left_legs = (
         get_left_front_leg(servo_controller),
         get_left_middle_leg(servo_controller),
@@ -34,7 +44,8 @@ def get_left_front_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='left_front',
         servos=servo_controller.get_servos(25, 24, 15),
-        flip_angles=(True, True, True),
+        angle_from_base=ANGLE_FROM_BASE,
+        flip_angles=True,
         # angles=(85, 158, 124)
     )
 
@@ -43,7 +54,8 @@ def get_left_middle_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='left_middle',
         servos=servo_controller.get_servos(28, 27, 26),
-        flip_angles=(True, True, True),
+        angle_from_base=0.,
+        flip_angles=True,
         # angles = (70, 156, 116)
     )
 
@@ -52,7 +64,8 @@ def get_left_back_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='left_back',
         servos=servo_controller.get_servos(31, 30, 29),
-        flip_angles=(True, True, True),
+        angle_from_base=-ANGLE_FROM_BASE,
+        flip_angles=True,
         # angles = (83, 146, 123)
     )
 
@@ -61,6 +74,7 @@ def get_right_front_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_front',
         servos=servo_controller.get_servos(6, 7, 11),
+        angle_from_base=ANGLE_FROM_BASE,
         # angles = (85, 21, 46)
     )
 
@@ -69,6 +83,7 @@ def get_right_middle_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_middle',
         servos=servo_controller.get_servos(3, 4, 5),
+        angle_from_base=0.,
         # angles = (90, 15, 47)
     )
 
@@ -77,6 +92,7 @@ def get_right_back_leg(servo_controller: ServoController) -> 'Leg':
     return Leg(
         id='right_back',
         servos=servo_controller.get_servos(0, 1, 2),
+        angle_from_base=-ANGLE_FROM_BASE,
         # angles = (74, 20, 55)
     )
 
@@ -84,21 +100,25 @@ def get_right_back_leg(servo_controller: ServoController) -> 'Leg':
 class Leg:
     id: str
 
-    servos: Sequence[Servo]
+    servos: LegServos
     """Three servos in order from internal to external joints."""
 
-    flip_angles: Tuple[bool, bool, bool]
+    angle_from_base: float
+
+    flip_angles: bool
 
     def __init__(
             self,
             id: str,
-            servos: Sequence[Servo],
-            flip_angles: Tuple[bool, bool, bool] = (False, False, False),
+            servos: LegServos,
+            angle_from_base: float,
+            flip_angles: bool = False,
     ) -> None:
         assert len(servos) == 3, len(servos)
 
         self.id = id
         self.servos = servos
+        self.angle_from_base = angle_from_base
         self.flip_angles = flip_angles
 
     def __repr__(self) -> str:
@@ -122,7 +142,7 @@ class Leg:
         if angle is None:
             return None
 
-        return 180 - angle if self.flip_angles[servo_index] else angle
+        return 180 - angle if self.flip_angles else angle
 
     def set_angle(self, servo_index: int, angle: ServoAngle) -> None:
         servo = self.servos[servo_index]
@@ -130,7 +150,7 @@ class Leg:
         if angle is None:
             servo.angle = None
         else:
-            servo.angle = 180 - angle if self.flip_angles[servo_index] else angle
+            servo.angle = 180 - angle if self.flip_angles else angle
 
     def rest(self, speed: float) -> None:
         self.angles = (90, 10, 10)

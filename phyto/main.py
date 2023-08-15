@@ -1,6 +1,7 @@
 from phyto import config
 from phyto.base import get_base
 from phyto.base.base import Base
+from phyto.base.base_test import base_test
 from phyto.base.servo_controller import get_servo_controller
 from phyto.i2c import get_i2c_bus
 from phyto.types import I2cAddress, Pin
@@ -14,6 +15,10 @@ def main(
         pca9685_1_i2c_address: I2cAddress = config.PCA9685_1_I2C_ADDRESS,
         pca9685_pwm_freq: int = config.PCA9685_PWM_FREQ,
 ):
+    # TODO REMOVE THIS
+    base_test()
+    return
+
     with get_i2c_bus(i2c_bus_scl, i2c_bus_sda, i2c_bus_freq) as i2c_bus:
         with get_servo_controller(
                 i2c_bus,

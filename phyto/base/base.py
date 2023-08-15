@@ -1,5 +1,5 @@
 try:
-    from typing import Sequence
+    from typing import Sequence, Tuple
 except ImportError:
     pass
 
@@ -17,26 +17,26 @@ def get_base(
 
 
 class Base:
-    left_legs: Sequence[Leg]
-    right_legs: Sequence[Leg]
+    left_legs: Tuple[Leg, Leg, Leg]
+    right_legs: Tuple[Leg, Leg, Leg]
 
-    leg_groups: Sequence[Sequence[Leg]]
+    leg_groups: Tuple[Tuple[Leg, Leg, Leg], Tuple[Leg, Leg, Leg]]
 
-    def __init__(self, left_legs: Sequence[Leg], right_legs: Sequence[Leg]) -> None:
+    def __init__(self, left_legs: Tuple[Leg, Leg, Leg], right_legs: Tuple[Leg, Leg, Leg]) -> None:
+        assert len(left_legs) == 3, len(left_legs)
+        assert len(right_legs) == 3, len(right_legs)
+
         self.left_legs = left_legs
         self.right_legs = right_legs
 
-        self.leg_groups = [
+        self.leg_groups = (
             (left_legs[0], right_legs[1], left_legs[2]),
             (right_legs[0], left_legs[1], right_legs[2]),
-        ]
+        )
 
     @property
     def legs(self) -> Sequence[Leg]:
-        legs = []
-        legs.extend(self.left_legs)
-        legs.extend(self.right_legs)
-        return legs
+        return self.left_legs + self.right_legs
 
     def rest(self, speed: float) -> None:
         for leg in self.legs:

@@ -1,8 +1,3 @@
-try:
-    from typing import Sequence
-except ImportError:
-    pass
-
 from abc import abstractmethod
 
 from adafruit_motor.servo import Servo
@@ -10,6 +5,11 @@ from adafruit_pca9685 import PCA9685
 from busio import I2C
 
 from phyto.types import I2cAddress
+
+try:
+    from typing import Tuple
+except ImportError:
+    Tuple = ...
 
 Channel = int
 
@@ -50,7 +50,7 @@ class ServoController:
     def get_servo(self, channel: Channel) -> Servo:
         ...
 
-    def get_servos(self, *channels: int) -> Sequence[Servo]:
+    def get_servos(self, *channels: int) -> Tuple[Servo, ...]:
         return tuple(self.get_servo(channel) for channel in channels)
 
     def disable(self) -> None:

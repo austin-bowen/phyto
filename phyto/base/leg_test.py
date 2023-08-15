@@ -1,5 +1,4 @@
 import math
-import time
 
 from phyto import config
 from phyto.base.leg import get_right_front_leg, get_right_middle_leg, get_right_back_leg, get_left_front_leg, \
