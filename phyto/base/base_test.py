@@ -55,22 +55,48 @@ def run(servo_controller: ServoController) -> None:
 
     all_smoothers = left_smoothers + right_smoothers
 
-    x = 0.08
-    dy = 0.02
+    direction = math.radians(0)
+
+    x = 0.1
+    dy = 0.04
     low, high = -0.06, -0.03
 
+    leg_center = Point3D(x, 0, 0)
+
+    # left_targets = [
+    #     Point3D(x, dy, low),
+    #     Point3D(x, 0.0, low),
+    #     Point3D(x, -dy, low),
+    #     Point3D(x, 0.0, high),
+    # ]
+    #
+    # right_targets = [
+    #     Point3D(x, -dy, low),
+    #     Point3D(x, 0.0, high),
+    #     Point3D(x, dy, low),
+    #     Point3D(x, 0.0, low),
+    # ]
+
     left_targets = [
-        Point3D(x, dy, low),
-        Point3D(x, 0.0, low),
         Point3D(x, -dy, low),
-        Point3D(x, 0.0, high),
+        Point3D(x, -dy, low),
+        Point3D(x, -dy, high),
+        Point3D(x, 0, high),
+        Point3D(x, dy, high),
+        Point3D(x, dy, low),
+        Point3D(x, dy, low),
+        Point3D(x, 0, low),
     ]
 
     right_targets = [
-        Point3D(x, -dy, low),
-        Point3D(x, 0.0, high),
+        Point3D(x, dy, high),
         Point3D(x, dy, low),
-        Point3D(x, 0.0, low),
+        Point3D(x, dy, low),
+        Point3D(x, 0, low),
+        Point3D(x, -dy, low),
+        Point3D(x, -dy, low),
+        Point3D(x, -dy, high),
+        Point3D(x, 0, high),
     ]
 
     solver = InverseSolver3Dof(l0=.032, l1=.090, l2=.112)
@@ -82,13 +108,13 @@ def run(servo_controller: ServoController) -> None:
             for step in range(steps):
                 for left_target, right_target in zip(left_targets, right_targets):
                     # Set smoother targets
-                    for legs, smoothers, target in [
-                        (left_leg_group, left_smoothers, left_target),
-                        (right_leg_group, right_smoothers, right_target),
+                    for legs, smoothers, target, d in [
+                        (left_leg_group, left_smoothers, left_target, -direction),
+                        (right_leg_group, right_smoothers, right_target, direction),
                     ]:
-                        for leg, smoother in zip(legs, smoothers):
-                            theta = -leg.angle_from_base
-                            leg_target = rotate_point(target, theta)
+                        for leg, smoother, dd in zip(legs, smoothers, (d, -d, d)):
+                            theta = -leg.angle_from_base + dd
+                            leg_target = rotate_point(target - leg_center, theta) + leg_center
                             smoother.target = leg_target
 
                     # Update positions
@@ -105,11 +131,14 @@ def run(servo_controller: ServoController) -> None:
                             theta1 = 90 - math.degrees(theta1)
                             theta2 = 180 + math.degrees(theta2)
 
-                            leg.angles = (theta0, theta1, theta2)
+                            try:
+                                leg.angles = (theta0, theta1, theta2)
+                            except ValueError:
+                                print(f'ERROR: Invalid angles for {leg.id}: {theta0}, {theta1}, {theta2}')
         except KeyboardInterrupt:
             break
         except Exception as e:
-            print(f'ERROR: {e}')
+            print(f'ERROR: {repr(e)}')
 
 
 def rotate_point(point: Point3D, angle: float) -> Point3D:

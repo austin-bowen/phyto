@@ -2,6 +2,7 @@ from phyto import config
 from phyto.base import get_base
 from phyto.base.base import Base
 from phyto.base.base_test import base_test
+from phyto.base.leg_test import leg_test
 from phyto.base.servo_controller import get_servo_controller
 from phyto.i2c import get_i2c_bus
 from phyto.types import I2cAddress, Pin
@@ -17,6 +18,7 @@ def main(
 ):
     # TODO REMOVE THIS
     base_test()
+    # leg_test()
     return
 
     with get_i2c_bus(i2c_bus_scl, i2c_bus_sda, i2c_bus_freq) as i2c_bus:

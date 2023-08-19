@@ -64,6 +64,9 @@ def run(servo_controller: ServoController) -> None:
 
             while not smoother.at_target:
                 position = smoother.position
+
+                print(f'Position: {position}')
+
                 theta0, theta1, theta2 = solver.solve(position.x, position.y, position.z)
 
                 theta0 = math.degrees(theta0)
@@ -79,8 +82,11 @@ def run(servo_controller: ServoController) -> None:
                 print(f'Offset: theta0={theta0}, theta1={theta1}, theta2={theta2}')
 
                 for leg in legs.values() if leg_name == 'all' else [legs[leg_name]]:
-                    leg.angles = (theta0, theta1, theta2)
+                    try:
+                        leg.angles = (theta0, theta1, theta2)
+                    except ValueError:
+                        print(f'ERROR: Invalid angles for {leg.id}: {theta0}, {theta1}, {theta2}')
         except KeyboardInterrupt:
             break
         except Exception as e:
-            print(f'ERROR: {e}')
+            print(f'ERROR: {repr(e)}')
