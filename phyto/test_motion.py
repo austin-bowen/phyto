@@ -68,6 +68,10 @@ class PositionSmootherTest(TestCase):
 
         self.assertEqual(Point3D(1, 0, 0), self.smoother.position)
 
+    def test_set_target_with_duration_correctly_sets_speed(self):
+        self.smoother.set_target(Point3D(2, 0, 0), duration=4)
+        self.assertAlmostEqual(2 / 4, self.smoother.speed)
+
 
 class FakeTimeFunc:
     def __init__(self, *times: float):

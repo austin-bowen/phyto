@@ -64,3 +64,15 @@ class PositionSmoother:
     @property
     def at_target(self) -> bool:
         return self._position.almost_equal(self.target, tolerance=self.tolerance)
+
+    def set_target(self, target: Point3D, speed: float = None, duration: float = None) -> None:
+        """Sets the target point and, optionally, the speed or the duration of the movement."""
+
+        if speed is not None and duration is not None:
+            raise ValueError(f'Cannot set both speed and duration. speed={speed}; duration={duration}')
+
+        self.target = target
+        if speed is not None:
+            self.speed = speed
+        elif duration is not None:
+            self.speed = (target - self._position).norm() / duration
