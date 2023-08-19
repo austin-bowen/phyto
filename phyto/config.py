@@ -3,8 +3,8 @@ import board
 from phyto.types import I2cAddress, Pin
 
 try:
-    I2C_BUS_SCL: Pin = board.SCL
-    I2C_BUS_SDA: Pin = board.SDA
+    I2C_BUS_SCL: Pin = board.GP21
+    I2C_BUS_SDA: Pin = board.GP20
 except AttributeError:
     I2C_BUS_SCL: Pin = ...
     I2C_BUS_SDA: Pin = ...
