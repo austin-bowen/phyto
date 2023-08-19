@@ -1,8 +1,8 @@
 from phyto import config
 from phyto.base import get_base
 from phyto.base.base import Base
-from phyto.base.base_test import base_test
-from phyto.base.leg_test import leg_test
+from phyto.base.base_demo import base_test
+from phyto.base.leg_demo import leg_test
 from phyto.base.servo_controller import get_servo_controller
 from phyto.i2c import get_i2c_bus
 from phyto.types import I2cAddress, Pin
