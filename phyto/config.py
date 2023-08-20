@@ -5,9 +5,17 @@ from phyto.types import I2cAddress, Pin
 try:
     I2C_BUS_SCL: Pin = board.GP21
     I2C_BUS_SDA: Pin = board.GP20
+
+    LEFT_EYE_ADC_PIN: Pin = board.A0
+    RIGHT_EYE_ADC_PIN: Pin = board.A1
+    BACK_EYE_ADC_PIN: Pin = board.A2
 except AttributeError:
     I2C_BUS_SCL: Pin = ...
     I2C_BUS_SDA: Pin = ...
+
+    LEFT_EYE_ADC_PIN: Pin = ...
+    RIGHT_EYE_ADC_PIN: Pin = ...
+    BACK_EYE_ADC_PIN: Pin = ...
 
 I2C_BUS_FREQ: int = 100000
 
