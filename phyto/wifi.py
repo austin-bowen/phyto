@@ -1,5 +1,9 @@
 import os
-import wifi
+
+try:
+    import wifi
+except ImportError:
+    wifi = ...
 
 WIFI_SSID = os.getenv('WIFI_SSID', None)
 WIFI_PASSWORD = os.getenv('WIFI_PASSWORD', None)
@@ -11,15 +15,15 @@ def setup_wifi(
         password: str = WIFI_PASSWORD,
         hostname: str = WIFI_HOSTNAME,
 ) -> None:
-    """Connects to WiFi. Raises ``ConnectionError`` if something goes wrong."""
+    """Connects to Wi-Fi. Raises ``ConnectionError`` if something goes wrong."""
 
-    print(f'Connecting to WiFi (ssid={ssid}; hostname={hostname})...')
+    print(f'Connecting to Wi-Fi (ssid={ssid}; hostname={hostname})...')
 
     wifi.radio.hostname = hostname
     try:
         wifi.radio.connect(ssid, password)
     except ConnectionError:
-        print('Failed to connect to WiFi')
+        print('Failed to connect to Wi-Fi')
         raise
 
-    print(f'Connected to WiFi! ip={wifi.radio.ipv4_address}')
+    print(f'Connected to Wi-Fi! ip={wifi.radio.ipv4_address}')
