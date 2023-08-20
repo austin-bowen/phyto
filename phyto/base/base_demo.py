@@ -37,7 +37,7 @@ def run(servo_controller: ServoController) -> None:
     left_leg_group, right_leg_group = base.leg_groups
     all_legs = left_leg_group + right_leg_group
 
-    speed = 0.2
+    speed = 0.15
 
     left_smoothers = [
         PositionSmoother(
@@ -59,45 +59,25 @@ def run(servo_controller: ServoController) -> None:
 
     x = 0.1
     dy = 0.04
-    low, high = -0.06, -0.03
+    dz = 0.05
+    low = -0.16
+    high = low + dz
+    lean = 0.02 / 2
 
     leg_center = Point3D(x, 0, 0)
 
-    # left_targets = [
-    #     Point3D(x, dy, low),
-    #     Point3D(x, 0.0, low),
-    #     Point3D(x, -dy, low),
-    #     Point3D(x, 0.0, high),
-    # ]
-    #
-    # right_targets = [
-    #     Point3D(x, -dy, low),
-    #     Point3D(x, 0.0, high),
-    #     Point3D(x, dy, low),
-    #     Point3D(x, 0.0, low),
-    # ]
+    travel_speed = 1.5 * speed
 
     left_targets = [
-        Point3D(x, -dy, low),
-        Point3D(x, -dy, low),
-        Point3D(x, -dy, high),
-        Point3D(x, 0, high),
-        Point3D(x, dy, high),
-        Point3D(x, dy, low),
-        Point3D(x, dy, low),
-        Point3D(x, 0, low),
+        (Point3D(x, -dy, low), speed),
+        (Point3D(x, -dy - lean, low), travel_speed),
+        (Point3D(x, -dy, high), travel_speed),
+        (Point3D(x, dy + lean, high), travel_speed),
+        (Point3D(x, dy, low), travel_speed),
+        (Point3D(x, 0, low), speed),
     ]
 
-    right_targets = [
-        Point3D(x, dy, high),
-        Point3D(x, dy, low),
-        Point3D(x, dy, low),
-        Point3D(x, 0, low),
-        Point3D(x, -dy, low),
-        Point3D(x, -dy, low),
-        Point3D(x, -dy, high),
-        Point3D(x, 0, high),
-    ]
+    right_targets = left_targets[len(left_targets) // 2:] + left_targets[:len(left_targets) // 2]
 
     solver = InverseSolver3Dof(l0=.032, l1=.090, l2=.112)
 
@@ -112,10 +92,11 @@ def run(servo_controller: ServoController) -> None:
                         (left_leg_group, left_smoothers, left_target, -direction),
                         (right_leg_group, right_smoothers, right_target, direction),
                     ]:
+                        target_position, target_speed = target
                         for leg, smoother, dd in zip(legs, smoothers, (d, -d, d)):
                             theta = -leg.angle_from_base + dd
-                            leg_target = rotate_point(target - leg_center, theta) + leg_center
-                            smoother.target = leg_target
+                            leg_target = rotate_point(target_position - leg_center, theta) + leg_center
+                            smoother.set_target(leg_target, speed=target_speed)
 
                     # Update positions
                     while not all(smoother.at_target for smoother in all_smoothers):
