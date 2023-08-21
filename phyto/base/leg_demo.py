@@ -1,13 +1,11 @@
 import math
 
-from phyto import config
-from phyto.base.leg import get_right_front_leg, get_right_middle_leg, get_right_back_leg, get_left_front_leg, \
-    get_left_middle_leg, get_left_back_leg
+from phyto.base.leg import get_legs
 from phyto.base.servo_controller import get_servo_controller, ServoController
 from phyto.i2c import get_i2c_bus
 from phyto.kinematics.inverse import InverseSolver3Dof
 from phyto.motion import PositionSmoother
-from phyto.types import Pin, I2cAddress, Point3D
+from phyto.types import Point3D
 
 
 def leg_demo() -> None:
@@ -16,13 +14,15 @@ def leg_demo() -> None:
 
 
 def run(servo_controller: ServoController) -> None:
+    left_legs, right_legs = get_legs(servo_controller)
+
     legs = dict(
-        lf=get_left_front_leg(servo_controller),
-        lm=get_left_middle_leg(servo_controller),
-        lb=get_left_back_leg(servo_controller),
-        rf=get_right_front_leg(servo_controller),
-        rm=get_right_middle_leg(servo_controller),
-        rb=get_right_back_leg(servo_controller),
+        lf=left_legs[0],
+        lm=left_legs[1],
+        lb=left_legs[2],
+        rf=right_legs[0],
+        rm=right_legs[1],
+        rb=right_legs[2],
     )
 
     smoother = PositionSmoother(
