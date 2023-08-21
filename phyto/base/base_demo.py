@@ -2,7 +2,6 @@ import math
 
 from phyto.base import get_base
 from phyto.base.servo_controller import get_servo_controller, ServoController
-from phyto.eyes import get_eyes
 from phyto.i2c import get_i2c_bus
 
 
@@ -12,7 +11,6 @@ def base_demo() -> None:
 
 
 def run(servo_controller: ServoController) -> None:
-    eyes = get_eyes()
     base = get_base(servo_controller)
 
     speed = 0.1
@@ -21,12 +19,10 @@ def run(servo_controller: ServoController) -> None:
 
     while True:
         try:
-            direction = eyes.brightest_direction()
-
-            steps = 1  # int(input('steps: '))
-
+            steps = int(input('steps: '))
             base.walk(speed, direction, steps)
         except KeyboardInterrupt:
+            base.rest(speed)
             break
         except Exception as e:
             print(f'ERROR: {repr(e)}')

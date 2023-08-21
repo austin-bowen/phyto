@@ -19,4 +19,15 @@ class Phyto:
         self.base = base
 
     def run(self) -> None:
-        ...
+        speed = 0.1
+
+        while True:
+            try:
+                direction = self.eyes.brightest_direction()
+                self.base.walk(speed, direction, steps=1)
+            except KeyboardInterrupt:
+                break
+            except Exception as e:
+                print(f'ERROR: {repr(e)}')
+
+        self.base.rest(speed)
