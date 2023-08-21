@@ -184,18 +184,9 @@ class Leg:
     def set_target(self, target: Point3D, speed: float) -> None:
         self.smoother.set_target(target, speed=speed)
 
-    def rest(self, speed: float) -> None:
-        self.angles = (90, 10, 10)
-        sleep(0.5)
-        self.disable()
-
     def disable(self) -> None:
         for servo in self.servos:
             servo.angle = None
-
-    def stand(self, speed: float, height: float) -> None:
-        self.angles = (90, 90, 90)
-        sleep(0.5)
 
     def move(self) -> None:
         """Moves the leg one bit closer to the target, following the position smoother."""
