@@ -1,33 +1,16 @@
 import math
 from math import cos, sin
 
-from phyto import config
 from phyto.base import get_base
 from phyto.base.servo_controller import get_servo_controller, ServoController
 from phyto.i2c import get_i2c_bus
 from phyto.kinematics.inverse import InverseSolver3Dof
 from phyto.motion import PositionSmoother
-from phyto.types import Pin, I2cAddress, Point3D
+from phyto.types import Point3D
 
 
-def base_test(
-        i2c_bus_scl: Pin = config.I2C_BUS_SCL,
-        i2c_bus_sda: Pin = config.I2C_BUS_SDA,
-        i2c_bus_freq: int = config.I2C_BUS_FREQ,
-        pca9685_0_i2c_address: I2cAddress = config.PCA9685_0_I2C_ADDRESS,
-        pca9685_1_i2c_address: I2cAddress = config.PCA9685_1_I2C_ADDRESS,
-        pca9685_pwm_freq: int = config.PCA9685_PWM_FREQ,
-) -> None:
-    i2c_bus = get_i2c_bus(i2c_bus_scl, i2c_bus_sda, i2c_bus_freq)
-
-    servo_controller = get_servo_controller(
-        i2c_bus,
-        pca9685_0_i2c_address,
-        pca9685_1_i2c_address,
-        pca9685_pwm_freq,
-    )
-
-    with i2c_bus, servo_controller:
+def base_demo() -> None:
+    with get_i2c_bus() as i2c_bus, get_servo_controller(i2c_bus) as servo_controller:
         run(servo_controller)
 
 
@@ -37,7 +20,7 @@ def run(servo_controller: ServoController) -> None:
     left_leg_group, right_leg_group = base.leg_groups
     all_legs = left_leg_group + right_leg_group
 
-    speed = 0.15
+    speed = 0.1
 
     left_smoothers = [
         PositionSmoother(
@@ -60,7 +43,7 @@ def run(servo_controller: ServoController) -> None:
     x = 0.1
     dy = 0.04
     dz = 0.05
-    low = -0.16
+    low = -0.08
     high = low + dz
     lean = 0.02 / 2
 

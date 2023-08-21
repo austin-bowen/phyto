@@ -4,6 +4,7 @@ from adafruit_motor.servo import Servo
 from adafruit_pca9685 import PCA9685
 from busio import I2C
 
+from phyto import config
 from phyto.types import I2cAddress
 
 try:
@@ -16,9 +17,9 @@ Channel = int
 
 def get_servo_controller(
         i2c_bus: I2C,
-        pca9685_0_i2c_address: I2cAddress,
-        pca9685_1_i2c_address: I2cAddress,
-        pwm_freq: int,
+        pca9685_0_i2c_address: I2cAddress = config.PCA9685_0_I2C_ADDRESS,
+        pca9685_1_i2c_address: I2cAddress = config.PCA9685_1_I2C_ADDRESS,
+        pwm_freq: int = config.PCA9685_PWM_FREQ,
 ) -> 'ServoController':
     servo_controller_0 = PCA9685ServoController(i2c_bus, address=pca9685_0_i2c_address)
     servo_controller_0.frequency = pwm_freq
