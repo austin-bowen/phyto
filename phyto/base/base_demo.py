@@ -1,5 +1,4 @@
 import math
-from math import cos, sin
 
 from phyto.base import get_base
 from phyto.base.servo_controller import get_servo_controller, ServoController
@@ -7,6 +6,7 @@ from phyto.i2c import get_i2c_bus
 from phyto.kinematics.inverse import InverseSolver3Dof
 from phyto.motion import PositionSmoother
 from phyto.types import Point3D
+from phyto.utils import rotate_point
 
 
 def base_demo() -> None:
@@ -103,11 +103,3 @@ def run(servo_controller: ServoController) -> None:
             break
         except Exception as e:
             print(f'ERROR: {repr(e)}')
-
-
-def rotate_point(point: Point3D, angle: float) -> Point3D:
-    return Point3D(
-        point.x * cos(angle) - point.y * sin(angle),
-        point.x * sin(angle) + point.y * cos(angle),
-        point.z
-    )
