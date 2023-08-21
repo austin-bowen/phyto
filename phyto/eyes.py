@@ -66,3 +66,7 @@ class Eyes:
         y = (left - right) * self._sin_theta
 
         return math.atan2(y, x)
+
+    def light_level(self) -> float:
+        """Returns the average light level."""
+        return (self.left_eye.read() + self.right_eye.read() + self.back_eye.read()) / 3

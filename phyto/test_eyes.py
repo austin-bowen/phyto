@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from parameterized import parameterized
 
-from phyto.eyes import Eyes, Eye
+from phyto.eyes import Eye, Eyes
 
 
 class EyesTest(TestCase):
@@ -17,9 +17,19 @@ class EyesTest(TestCase):
         (1., 0., 0.5, pi / 2),
         (0., 1., 0.5, -pi / 2),
     ])
-    def test_eyes(self, left: float, right: float, back: float, direction: float):
+    def test_brightness_direction(self, left: float, right: float, back: float, direction: float):
         self.set_eye_values(left, right, back)
         self.assertAlmostEqual(direction, self.eyes.brightest_direction())
+
+    @parameterized.expand([
+        (0., 0., 0., 0 / 3),
+        (1., 0., 0., 1 / 3),
+        (0., 1., 1., 2 / 3),
+        (1., 1., 1., 3 / 3),
+    ])
+    def test_light_level(self, left: float, right: float, back: float, level: float):
+        self.set_eye_values(left, right, back)
+        self.assertAlmostEqual(level, self.eyes.light_level())
 
     def set_eye_values(self, left: float, right: float, back: float) -> None:
         self.eyes.left_eye.value = left
