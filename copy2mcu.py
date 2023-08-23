@@ -11,6 +11,7 @@ FILES_TO_COPY = (
     'lib/abc.py',
     'lib/adafruit_bus_device/*',
     'lib/adafruit_motor/*',
+    'lib/adafruit_debouncer.mpy',
     'lib/adafruit_pca9685.mpy',
     'lib/adafruit_register/*',
     'lib/README.txt',
