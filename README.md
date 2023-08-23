@@ -53,3 +53,9 @@ On startup, the Pico runs the `code.py` script.
 2. Install dependencies:
    1. `pip install -U pip`
    2. `pip install -r requirements.txt`
+
+## TODO
+
+- Calibrate the servos
+- Better gait control
+- Add web server to control Phyto remotely
