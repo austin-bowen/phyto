@@ -10,6 +10,9 @@ def eyes_demo():
     while True:
         direction = eyes.brightest_direction()
         direction = math.degrees(direction)
-        print(f'{direction:.2f}°')
+
+        level = eyes.light_level()
+
+        print(f'direction={direction:.2f}°;\tlevel={level:.2f}')
 
         time.sleep(0.5)
