@@ -1,6 +1,7 @@
 from adafruit_debouncer import Debouncer
 
 from phyto import config
+from phyto.asyncio import be_nice
 from phyto.types import Pin
 
 try:
@@ -50,6 +51,10 @@ class Button:
         self._debouncer.update()
         return self._debouncer.value == self.pressed_level
 
-    def wait_not_pressed(self) -> None:
+    async def until_pressed(self) -> None:
+        while not self.pressed:
+            await be_nice()
+
+    async def until_not_pressed(self) -> None:
         while self.pressed:
-            pass
+            await be_nice()

@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 from phyto.base.base import Base, get_base
@@ -58,24 +59,17 @@ class Phyto:
         self._walk_speed_button = self.buttons.button1
 
     async def run(self) -> None:
-        try:
-            while True:
-                if self._mode_toggle_button.pressed:
-                    self._mode_toggle_button.wait_not_pressed()
-                    self._toggle_mode()
+        await asyncio.gather(
+            self._handle_mode_toggle_button(),
+            self._handle_walk_speed_button(),
+            self._run_base(),
+        )
 
-                if self.mode == WALK:
-                    self._walk_mode()
-                elif self.mode == REST:
-                    self._rest_mode()
-                else:
-                    raise RuntimeError(f'Unknown mode: {self.mode}')
-        except KeyboardInterrupt:
-            pass
-        except Exception as e:
-            print(f'ERROR: {repr(e)}')
-        finally:
-            self.base.rest(self.rest_speed)
+    async def _handle_mode_toggle_button(self) -> None:
+        while True:
+            await self._mode_toggle_button.until_pressed()
+            self._toggle_mode()
+            await self._mode_toggle_button.until_not_pressed()
 
     def _toggle_mode(self) -> None:
         if self.mode == WALK:
@@ -89,17 +83,11 @@ class Phyto:
 
         print(f'Mode: {self.mode}')
 
-    def _walk_mode(self) -> None:
-        if self._walk_speed_button.pressed:
-            self._walk_speed_button.wait_not_pressed()
+    async def _handle_walk_speed_button(self) -> None:
+        while True:
+            await self._walk_speed_button.until_pressed()
             self._toggle_walk_speed()
-
-        if self._walk_speed == FAST:
-            self._walk_fast()
-        elif self._walk_speed == SLOW:
-            self._walk_slow()
-        else:
-            raise RuntimeError(f'Unknown walk speed: {self._walk_speed}')
+            await self._walk_speed_button.until_not_pressed()
 
     def _toggle_walk_speed(self) -> None:
         if self._walk_speed == FAST:
@@ -112,11 +100,28 @@ class Phyto:
 
         print(f'Walk speed: {self._walk_speed}')
 
-    def _walk_fast(self) -> None:
+    async def _run_base(self) -> None:
+        while True:
+            if self.mode == WALK:
+                await self._walk_mode()
+            elif self.mode == REST:
+                await self._rest_mode()
+            else:
+                raise RuntimeError(f'Unknown mode: {self.mode}')
+
+    async def _walk_mode(self) -> None:
+        if self._walk_speed == FAST:
+            await self._walk_fast()
+        elif self._walk_speed == SLOW:
+            await self._walk_slow()
+        else:
+            raise RuntimeError(f'Unknown walk speed: {self._walk_speed}')
+
+    async def _walk_fast(self) -> None:
         direction = self.eyes.read().brightest_direction
         self.base.walk(self.fast_walk_speed, direction, steps=1)
 
-    def _walk_slow(self) -> None:
+    async def _walk_slow(self) -> None:
         if self._should_resume_walking():
             direction = self.eyes.read().brightest_direction
             self.base.walk(self.slow_walk_speed, direction, steps=1)
@@ -126,7 +131,7 @@ class Phyto:
     def _should_resume_walking(self) -> bool:
         return self._resume_walking_time is None or time.monotonic() > self._resume_walking_time
 
-    def _rest_mode(self) -> None:
+    async def _rest_mode(self) -> None:
         if not self._rested:
             self._rested = True
             self.base.rest(self.rest_speed)
