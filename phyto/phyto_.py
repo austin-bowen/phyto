@@ -119,13 +119,13 @@ class Phyto:
 
     async def _walk_fast(self) -> None:
         direction = self.eyes.read().brightest_direction
-        self.base.walk(self.fast_walk_speed, direction, steps=1)
+        await self.base.walk(self.fast_walk_speed, direction, steps=1)
 
     async def _walk_slow(self) -> None:
         if self._should_resume_walking():
             direction = self.eyes.read().brightest_direction
-            self.base.walk(self.slow_walk_speed, direction, steps=1)
-            self.base.rest(self.rest_speed)
+            await self.base.walk(self.slow_walk_speed, direction, steps=1)
+            await self.base.rest(self.rest_speed)
             self._resume_walking_time = time.monotonic() + 60 * 1
 
     def _should_resume_walking(self) -> bool:
@@ -134,4 +134,4 @@ class Phyto:
     async def _rest_mode(self) -> None:
         if not self._rested:
             self._rested = True
-            self.base.rest(self.rest_speed)
+            await self.base.rest(self.rest_speed)

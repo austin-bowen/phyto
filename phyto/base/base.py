@@ -1,5 +1,6 @@
 from math import pi
 
+from phyto.asyncio import be_nice
 from phyto.base.leg import Leg, get_legs, LegGroup, REST_POSITION
 from phyto.base.servo_controller import ServoController
 from phyto.types import Point3D
@@ -42,27 +43,23 @@ class Base:
         self.right_leg_group = (right_legs[0], left_legs[1], right_legs[2])
         self.leg_groups = (self.left_leg_group, self.right_leg_group)
 
-    def rest(self, speed: float, rest_target: Point3D = REST_POSITION) -> None:
+    async def rest(self, speed: float, rest_target: Point3D = REST_POSITION) -> None:
         for leg in self.legs:
             leg.set_target(rest_target, speed=speed)
 
-        self._wait_for_legs_to_reach_targets()
+        await self._until_legs_reach_targets()
         self.disable()
 
     def disable(self) -> None:
         for leg in self.legs:
             leg.disable()
 
-    def stand(self, speed: float, height: float) -> None:
-        for leg in self.legs:
-            ...
-
-    def walk(self, speed: float, direction: float, steps: int) -> None:
+    async def walk(self, speed: float, direction: float, steps: int) -> None:
         assert steps >= 0, steps
         for _ in range(steps):
-            self.step(speed, direction)
+            await self.step(speed, direction)
 
-    def step(self, speed: float, direction: float) -> None:
+    async def step(self, speed: float, direction: float) -> None:
         assert speed > 0, speed
         assert -pi <= direction <= pi, direction
 
@@ -90,7 +87,7 @@ class Base:
 
         for left_target, right_target in zip(left_targets, right_targets):
             self._set_leg_group_targets(left_target, right_target, direction, leg_center)
-            self._wait_for_legs_to_reach_targets()
+            await self._until_legs_reach_targets()
 
     def _set_leg_group_targets(
             self,
@@ -110,11 +107,13 @@ class Base:
                 leg_target = rotate_point(target_position - leg_center, theta) + leg_center
                 leg.set_target(leg_target, speed=target_speed)
 
-    def _wait_for_legs_to_reach_targets(self) -> None:
+    async def _until_legs_reach_targets(self) -> None:
         legs_not_at_target = self._legs_not_at_target()
         while legs_not_at_target:
             for leg in legs_not_at_target:
                 leg.move()
+
+            await be_nice()
 
             legs_not_at_target = self._legs_not_at_target()
 
