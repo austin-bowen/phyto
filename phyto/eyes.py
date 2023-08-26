@@ -83,8 +83,8 @@ class EyesReading:
     def __repr__(self) -> str:
         dir_degrees = math.degrees(self.brightest_direction)
         return (
-            f'EyesReading('
-            f'brightest_direction={dir_degrees:.3f}°, '
-            f'direction_magnitude={self.direction_magnitude:.3f}, '
+            f'EyesReading(' +
+            f'brightest_direction={dir_degrees:.3f}°, ' +
+            f'direction_magnitude={self.direction_magnitude:.3f}, ' +
             f'light_level={self.light_level:.3f})'
         )
