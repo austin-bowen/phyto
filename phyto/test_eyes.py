@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from parameterized import parameterized
 
-from phyto.eyes import Eye, Eyes
+from phyto.eyes import Eye, Eyes, EyesReading
 
 
 class EyesTest(TestCase):
@@ -19,7 +19,7 @@ class EyesTest(TestCase):
     ])
     def test_brightness_direction(self, left: float, right: float, back: float, direction: float):
         self.set_eye_values(left, right, back)
-        self.assertAlmostEqual(direction, self.eyes.brightest_direction())
+        self.assertAlmostEqual(direction, self.eyes.read().brightest_direction)
 
     @parameterized.expand([
         (0., 0., 0., 0 / 3),
@@ -29,12 +29,20 @@ class EyesTest(TestCase):
     ])
     def test_light_level(self, left: float, right: float, back: float, level: float):
         self.set_eye_values(left, right, back)
-        self.assertAlmostEqual(level, self.eyes.light_level())
+        self.assertAlmostEqual(level, self.eyes.read().light_level)
 
     def set_eye_values(self, left: float, right: float, back: float) -> None:
         self.eyes.left_eye.value = left
         self.eyes.right_eye.value = right
         self.eyes.back_eye.value = back
+
+
+class EyesReadingTest(TestCase):
+    def test_repr(self):
+        self.assertEqual(
+            'EyesReading(brightest_direction=90.000°, direction_magnitude=0.123, light_level=0.456)',
+            repr(EyesReading(pi / 2, 0.123, 0.456))
+        )
 
 
 class FakeEye(Eye):

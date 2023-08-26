@@ -55,9 +55,7 @@ class Eyes:
         self._cos_theta = math.cos(theta)
         self._sin_theta = math.sin(theta)
 
-    def brightest_direction(self) -> float:
-        """Returns the direction of the brightest light, in radians."""
-
+    def read(self) -> 'EyesReading':
         left = self.left_eye.read()
         right = self.right_eye.read()
         back = self.back_eye.read()
@@ -65,8 +63,28 @@ class Eyes:
         x = (left + right) * self._cos_theta - back
         y = (left - right) * self._sin_theta
 
-        return math.atan2(y, x)
+        return EyesReading(
+            brightest_direction=math.atan2(y, x),
+            direction_magnitude=math.sqrt(x ** 2 + y ** 2),
+            light_level=(left + right + back) / 3,
+        )
 
-    def light_level(self) -> float:
-        """Returns the average light level."""
-        return (self.left_eye.read() + self.right_eye.read() + self.back_eye.read()) / 3
+
+class EyesReading:
+    brightest_direction: float
+    direction_magnitude: float
+    light_level: float
+
+    def __init__(self, brightest_direction: float, direction_magnitude: float, light_level: float):
+        self.brightest_direction = brightest_direction
+        self.direction_magnitude = direction_magnitude
+        self.light_level = light_level
+
+    def __repr__(self) -> str:
+        dir_degrees = math.degrees(self.brightest_direction)
+        return (
+            f'EyesReading('
+            f'brightest_direction={dir_degrees:.3f}°, '
+            f'direction_magnitude={self.direction_magnitude:.3f}, '
+            f'light_level={self.light_level:.3f})'
+        )

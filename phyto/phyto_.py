@@ -57,7 +57,7 @@ class Phyto:
         self._mode_toggle_button = self.buttons.button0
         self._walk_speed_button = self.buttons.button1
 
-    def run(self) -> None:
+    async def run(self) -> None:
         try:
             while True:
                 if self._mode_toggle_button.pressed:
@@ -113,12 +113,12 @@ class Phyto:
         print(f'Walk speed: {self._walk_speed}')
 
     def _walk_fast(self) -> None:
-        direction = self.eyes.brightest_direction()
+        direction = self.eyes.read().brightest_direction
         self.base.walk(self.fast_walk_speed, direction, steps=1)
 
     def _walk_slow(self) -> None:
         if self._should_resume_walking():
-            direction = self.eyes.brightest_direction()
+            direction = self.eyes.read().brightest_direction
             self.base.walk(self.slow_walk_speed, direction, steps=1)
             self.base.rest(self.rest_speed)
             self._resume_walking_time = time.monotonic() + 60 * 1
