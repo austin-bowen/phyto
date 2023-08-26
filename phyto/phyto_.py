@@ -1,6 +1,7 @@
 import asyncio
 import time
 
+from phyto.asyncio import be_nice
 from phyto.base.base import Base, get_base
 from phyto.base.servo_controller import ServoController
 from phyto.buttons import Buttons, get_buttons
@@ -108,6 +109,8 @@ class Phyto:
                 await self._rest_mode()
             else:
                 raise RuntimeError(f'Unknown mode: {self.mode}')
+
+            await be_nice()
 
     async def _walk_mode(self) -> None:
         if self._walk_speed == FAST:

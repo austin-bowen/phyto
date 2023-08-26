@@ -112,8 +112,7 @@ class Base:
         while legs_not_at_target:
             for leg in legs_not_at_target:
                 leg.move()
-
-            await be_nice()
+                await be_nice()
 
             legs_not_at_target = self._legs_not_at_target()
 
