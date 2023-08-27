@@ -126,9 +126,13 @@ class Phyto:
 
     async def _walk_slow(self) -> None:
         if self._should_resume_walking():
-            direction = self.eyes.read().brightest_direction
-            await self.base.walk(self.slow_walk_speed, direction, steps=1)
-            await self.base.rest(self.rest_speed)
+            eyes_reading = self.eyes.read()
+
+            if eyes_reading.light_level < 0.92:
+                direction = eyes_reading.brightest_direction
+                await self.base.walk(self.slow_walk_speed, direction, steps=1)
+                await self.base.rest(self.rest_speed)
+
             self._resume_walking_time = time.monotonic() + 60 * 1
 
     def _should_resume_walking(self) -> bool:
