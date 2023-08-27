@@ -1,5 +1,4 @@
 import math
-from time import sleep
 
 from adafruit_motor.servo import Servo
 
@@ -53,6 +52,7 @@ def get_left_front_leg(servo_controller: ServoController, solver: InverseSolver3
         servos=servo_controller.get_servos(25, 24, 15),
         solver=solver,
         angle_from_base=ANGLE_FROM_BASE,
+        angle_offsets=(90 + 5, 90, 180),
         flip_angles=True,
         # angles=(85, 158, 124)
     )
@@ -64,6 +64,7 @@ def get_left_middle_leg(servo_controller: ServoController, solver: InverseSolver
         servos=servo_controller.get_servos(28, 27, 26),
         solver=solver,
         angle_from_base=0.,
+        angle_offsets=(90 + 20, 90, 180),
         flip_angles=True,
         # angles = (70, 156, 116)
     )
@@ -75,6 +76,7 @@ def get_left_back_leg(servo_controller: ServoController, solver: InverseSolver3D
         servos=servo_controller.get_servos(31, 30, 29),
         solver=solver,
         angle_from_base=-ANGLE_FROM_BASE,
+        angle_offsets=(90 + 7, 90, 180),
         flip_angles=True,
         # angles = (83, 146, 123)
     )
@@ -86,6 +88,7 @@ def get_right_front_leg(servo_controller: ServoController, solver: InverseSolver
         servos=servo_controller.get_servos(6, 7, 11),
         solver=solver,
         angle_from_base=ANGLE_FROM_BASE,
+        angle_offsets=(85, 90, 180),
         # angles = (85, 21, 46)
     )
 
@@ -96,6 +99,7 @@ def get_right_middle_leg(servo_controller: ServoController, solver: InverseSolve
         servos=servo_controller.get_servos(3, 4, 5),
         solver=solver,
         angle_from_base=0.,
+        angle_offsets=(90, 90, 180),
         # angles = (90, 15, 47)
     )
 
@@ -106,6 +110,7 @@ def get_right_back_leg(servo_controller: ServoController, solver: InverseSolver3
         servos=servo_controller.get_servos(0, 1, 2),
         solver=solver,
         angle_from_base=-ANGLE_FROM_BASE,
+        angle_offsets=(74, 90, 180),
         # angles = (74, 20, 55)
     )
 
@@ -120,6 +125,8 @@ class Leg:
 
     angle_from_base: float
 
+    angle_offsets: Tuple[float, float, float]
+
     flip_angles: bool
 
     smoother: PositionSmoother
@@ -130,6 +137,7 @@ class Leg:
             servos: LegServos,
             solver: InverseSolver3Dof,
             angle_from_base: float,
+            angle_offsets: Tuple[float, float, float] = (90, 90, 180),
             flip_angles: bool = False,
             smoother: PositionSmoother = None
     ) -> None:
@@ -139,6 +147,7 @@ class Leg:
         self.servos = servos
         self.solver = solver
         self.angle_from_base = angle_from_base
+        self.angle_offsets = angle_offsets
         self.flip_angles = flip_angles
         self.smoother = smoother or PositionSmoother(REST_POSITION, 0.05)
 
@@ -198,8 +207,8 @@ class Leg:
 
         theta0, theta1, theta2 = self.solver.solve(position.x, position.y, position.z)
 
-        theta0 = 90 - math.degrees(theta0)
-        theta1 = 90 - math.degrees(theta1)
-        theta2 = 180 + math.degrees(theta2)
+        theta0 = self.angle_offsets[0] - math.degrees(theta0)
+        theta1 = self.angle_offsets[1] - math.degrees(theta1)
+        theta2 = self.angle_offsets[2] + math.degrees(theta2)
 
         self.angles = (theta0, theta1, theta2)
