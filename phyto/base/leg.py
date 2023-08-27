@@ -52,9 +52,10 @@ def get_left_front_leg(servo_controller: ServoController, solver: InverseSolver3
         servos=servo_controller.get_servos(25, 24, 15),
         solver=solver,
         angle_from_base=ANGLE_FROM_BASE,
-        angle_offsets=(90 + 5, 90, 180),
+        # Calibration paper: angles=(85, 158, 124)
+        # (center, 90, 90): angles=(85, 88, 87)
+        angle_offsets=(90 + 5, 90 + 2, 180 + 3),
         flip_angles=True,
-        # angles=(85, 158, 124)
     )
 
 
@@ -64,9 +65,10 @@ def get_left_middle_leg(servo_controller: ServoController, solver: InverseSolver
         servos=servo_controller.get_servos(28, 27, 26),
         solver=solver,
         angle_from_base=0.,
-        angle_offsets=(90 + 20, 90, 180),
+        # Calibration paper: angles = (70, 156, 116)
+        # (center, 90, 90): angles = (70, 83, 78)
+        angle_offsets=(90 + 20, 90 + 7, 180 + 12),
         flip_angles=True,
-        # angles = (70, 156, 116)
     )
 
 
@@ -76,9 +78,10 @@ def get_left_back_leg(servo_controller: ServoController, solver: InverseSolver3D
         servos=servo_controller.get_servos(31, 30, 29),
         solver=solver,
         angle_from_base=-ANGLE_FROM_BASE,
-        angle_offsets=(90 + 7, 90, 180),
+        # Calibration paper: angles = (83, 146, 123)
+        # (center, 90, 90): angles = (83, 79, 88)
+        angle_offsets=(90 + 7, 90 + 11, 180 + 2),
         flip_angles=True,
-        # angles = (83, 146, 123)
     )
 
 
@@ -88,8 +91,9 @@ def get_right_front_leg(servo_controller: ServoController, solver: InverseSolver
         servos=servo_controller.get_servos(6, 7, 11),
         solver=solver,
         angle_from_base=ANGLE_FROM_BASE,
-        angle_offsets=(85, 90, 180),
-        # angles = (85, 21, 46)
+        # Calibration paper: angles = (85, 21, 46)
+        # (center, 90, 90): angles = (85, 89, 80)
+        angle_offsets=(90 - 5, 90 - 1, 180 - 10),
     )
 
 
@@ -99,8 +103,9 @@ def get_right_middle_leg(servo_controller: ServoController, solver: InverseSolve
         servos=servo_controller.get_servos(3, 4, 5),
         solver=solver,
         angle_from_base=0.,
-        angle_offsets=(90, 90, 180),
-        # angles = (90, 15, 47)
+        # Calibration paper: angles = (90, 15, 47)
+        # (center, 90, 90): angles = (90, 89, 83)
+        angle_offsets=(90 - 0, 90 - 1, 180 - 7),
     )
 
 
@@ -110,8 +115,9 @@ def get_right_back_leg(servo_controller: ServoController, solver: InverseSolver3
         servos=servo_controller.get_servos(0, 1, 2),
         solver=solver,
         angle_from_base=-ANGLE_FROM_BASE,
-        angle_offsets=(74, 90, 180),
-        # angles = (74, 20, 55)
+        # Calibration paper: angles = (74, 20, 55)
+        # (center, 90, 90): angles = (74, 90, 91)
+        angle_offsets=(90 - 16, 90 - 0, 180 + 1),
     )
 
 
