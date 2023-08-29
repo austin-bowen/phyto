@@ -1,5 +1,8 @@
+import asyncio
+
 from phyto import config
 from phyto.adc import ADC
+from phyto.buzzer import Buzzer
 
 
 def get_batteries(
@@ -40,3 +43,25 @@ class Batteries:
     def __init__(self, logic_battery: Battery, motor_battery: Battery):
         self.logic_battery = logic_battery
         self.motor_battery = motor_battery
+
+
+class BatteryMonitor:
+    batteries: Batteries
+    buzzer: Buzzer
+
+    def __init__(self, batteries: Batteries, buzzer: Buzzer):
+        self.batteries = batteries
+        self.buzzer = buzzer
+
+    async def run(self):
+        while True:
+            if self.batteries.logic_battery.voltage_is_low:
+                print(f'WARN: Logic battery is low! voltage={self.batteries.logic_battery.voltage}')
+                await self.buzzer.chirp(1)
+                await asyncio.sleep(1)
+
+            if self.batteries.motor_battery.voltage_is_low:
+                print(f'WARN: Motor battery is low! voltage={self.batteries.motor_battery.voltage}')
+                await self.buzzer.chirp(2)
+
+            await asyncio.sleep(60)

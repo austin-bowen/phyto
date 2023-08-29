@@ -41,4 +41,4 @@ class Buzzer:
             await asyncio.sleep(off_seconds)
 
     async def chirp(self, count: int) -> None:
-        await self.timed_buzzes(count, on_seconds=0.01, off_seconds=0.05)
+        await self.timed_buzzes(count, on_seconds=0.01, off_seconds=0.1)

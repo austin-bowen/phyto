@@ -7,5 +7,5 @@ from phyto.phyto_ import get_phyto
 
 def main() -> None:
     with get_i2c_bus() as i2c_bus, get_servo_controller(i2c_bus) as servo_controller:
-        phyto = get_phyto(servo_controller)
+        phyto = get_phyto(i2c_bus, servo_controller)
         asyncio.run(phyto.run())

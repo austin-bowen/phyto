@@ -1,10 +1,15 @@
 import asyncio
 import time
 
+from busio import I2C
+
+from phyto.adc import get_adc
 from phyto.asyncio import be_nice
 from phyto.base.base import Base, get_base
 from phyto.base.servo_controller import ServoController
+from phyto.battery import get_batteries, BatteryMonitor
 from phyto.buttons import Buttons, get_buttons
+from phyto.buzzer import get_buzzer
 from phyto.eyes import Eyes, get_eyes
 
 Mode = str
@@ -16,11 +21,17 @@ SLOW = 'slow'
 FAST = 'fast'
 
 
-def get_phyto(servo_controller: ServoController) -> 'Phyto':
+def get_phyto(i2c_bus: I2C, servo_controller: ServoController) -> 'Phyto':
+    adc = get_adc(i2c_bus)
+    batteries = get_batteries(adc)
+    buzzer = get_buzzer()
+    battery_monitor = BatteryMonitor(batteries, buzzer)
+
     return Phyto(
         eyes=get_eyes(),
         base=get_base(servo_controller),
         buttons=get_buttons(),
+        battery_monitor=battery_monitor,
     )
 
 
@@ -29,6 +40,7 @@ class Phyto:
     eyes: Eyes
     base: Base
     buttons: Buttons
+    battery_monitor: BatteryMonitor
 
     fast_walk_speed: float
     slow_walk_speed: float
@@ -39,6 +51,7 @@ class Phyto:
             eyes: Eyes,
             base: Base,
             buttons: Buttons,
+            battery_monitor: BatteryMonitor,
             fast_walk_speed: float = 0.1,
             slow_walk_speed: float = 0.05,
             rest_speed: float = 0.05,
@@ -47,6 +60,7 @@ class Phyto:
         self.eyes = eyes
         self.base = base
         self.buttons = buttons
+        self.battery_monitor = battery_monitor
 
         self.fast_walk_speed = fast_walk_speed
         self.slow_walk_speed = slow_walk_speed
@@ -61,6 +75,7 @@ class Phyto:
 
     async def run(self) -> None:
         await asyncio.gather(
+            self.battery_monitor.run(),
             self._handle_mode_toggle_button(),
             self._handle_walk_speed_button(),
             self._run_base(),
