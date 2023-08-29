@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from adafruit_bus_device.i2c_device import I2CDevice
 from busio import I2C
 
@@ -8,12 +10,18 @@ from phyto.types import I2cAddress
 def get_adc(
         i2c_bus: I2C,
         i2c_address: I2cAddress = config.ADS7830_I2C_ADDRESS,
-) -> 'ADS7830':
+) -> 'ADC':
     i2c_device = I2CDevice(i2c_bus, i2c_address)
     return ADS7830(i2c_device)
 
 
-class ADS7830:
+class ADC:
+    @abstractmethod
+    def read(self, channel: int) -> float:
+        ...
+
+
+class ADS7830(ADC):
     i2c_device: I2CDevice
 
     def __init__(self, i2c_device: I2CDevice):
