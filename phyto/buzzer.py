@@ -35,10 +35,10 @@ class Buzzer:
         await asyncio.sleep(seconds)
         self.is_on = False
 
-    async def timed_buzzes(self, buzzes: int, on_seconds: float, off_seconds: float) -> None:
-        for _ in range(buzzes):
+    async def timed_buzzes(self, count: int, on_seconds: float, off_seconds: float) -> None:
+        for _ in range(count):
             await self.timed_buzz(on_seconds)
             await asyncio.sleep(off_seconds)
 
-    async def quick_buzzes(self, buzzes: int) -> None:
-        await self.timed_buzzes(buzzes, on_seconds=0.1, off_seconds=0.1)
+    async def chirp(self, count: int) -> None:
+        await self.timed_buzzes(count, on_seconds=0.01, off_seconds=0.05)
