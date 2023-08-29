@@ -12,6 +12,8 @@ try:
 
     BUTTON0_PIN: Pin = board.GP0
     BUTTON1_PIN: Pin = board.GP4
+
+    BUZZER_PIN: Pin = board.GP22
 except AttributeError:
     I2C_BUS_SCL: Pin = ...
     I2C_BUS_SDA: Pin = ...
@@ -22,6 +24,8 @@ except AttributeError:
 
     BUTTON0_PIN: Pin = ...
     BUTTON1_PIN: Pin = ...
+
+    BUZZER_PIN: Pin = ...
 
 I2C_BUS_FREQ: int = 100000
 

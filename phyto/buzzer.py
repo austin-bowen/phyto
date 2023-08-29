@@ -1,20 +1,44 @@
 import asyncio
 
+from digitalio import DigitalInOut, Direction
+
+from phyto import config
+from phyto.types import Pin
+
 
 def get_buzzer(
-
+    pin: Pin = config.BUZZER_PIN,
 ) -> 'Buzzer':
-    return Buzzer()
+    pin = DigitalInOut(pin)
+    pin.direction = Direction.OUTPUT
+
+    return Buzzer(pin)
 
 
 class Buzzer:
-    def start(self, freq: float) -> None:
-        ...
+    pin: DigitalInOut
 
-    def stop(self) -> None:
-        ...
+    def __init__(self, pin: DigitalInOut):
+        self.pin = pin
+        self.is_on = False
 
-    async def timed_buzz(self, freq: float, seconds: float) -> None:
-        self.start(freq)
+    @property
+    def is_on(self) -> bool:
+        return self.pin.value
+
+    @is_on.setter
+    def is_on(self, is_on: bool) -> None:
+        self.pin.value = is_on
+
+    async def timed_buzz(self, seconds: float) -> None:
+        self.is_on = True
         await asyncio.sleep(seconds)
-        self.stop()
+        self.is_on = False
+
+    async def timed_buzzes(self, buzzes: int, on_seconds: float, off_seconds: float) -> None:
+        for _ in range(buzzes):
+            await self.timed_buzz(on_seconds)
+            await asyncio.sleep(off_seconds)
+
+    async def quick_buzzes(self, buzzes: int) -> None:
+        await self.timed_buzzes(buzzes, on_seconds=0.1, off_seconds=0.1)
