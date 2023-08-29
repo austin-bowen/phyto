@@ -26,7 +26,7 @@ class ADS7830(ADC):
 
     def __init__(self, i2c_device: I2CDevice):
         self.i2c_device = i2c_device
-        self._voltage_scalar = 15 / 255
+        self._voltage_scalar = 15.6 / 255
 
     def read(self, channel: int) -> float:
         if channel < 0 or channel > 7:

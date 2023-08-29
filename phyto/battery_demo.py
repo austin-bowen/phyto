@@ -15,6 +15,6 @@ def battery_demo():
                     ('Logic battery', batteries.logic_battery),
                     ('Motor battery', batteries.motor_battery),
             ):
-                print(f'{name}: {battery.voltage} (is_low={battery.voltage_is_low}')
+                print(f'{name}: {battery.voltage} (is_low={battery.voltage_is_low})')
             print()
             time.sleep(1)
