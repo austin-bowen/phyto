@@ -2,7 +2,7 @@ import asyncio
 
 from phyto.base.servo_controller import get_servo_controller
 from phyto.i2c import get_i2c_bus
-from phyto.phyto_ import get_phyto
+from phyto.phyto import get_phyto
 
 
 def main() -> None:
