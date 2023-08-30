@@ -56,6 +56,5 @@ On startup, the Pico runs the `code.py` script.
 
 ## TODO
 
-- Calibrate the servos
 - Better gait control
 - Add web server to control Phyto remotely
