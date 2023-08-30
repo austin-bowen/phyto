@@ -7,7 +7,7 @@ from phyto.adc import get_adc
 from phyto.asyncio import be_nice
 from phyto.base.base import Base, get_base
 from phyto.base.servo_controller import ServoController
-from phyto.battery import get_batteries, BatteryMonitor
+from phyto.battery import get_batteries, Batteries, BatteryMonitor
 from phyto.buttons import Buttons, get_buttons
 from phyto.buzzer import get_buzzer
 from phyto.eyes import Eyes, get_eyes
@@ -31,6 +31,7 @@ def get_phyto(i2c_bus: I2C, servo_controller: ServoController) -> 'Phyto':
         eyes=get_eyes(),
         base=get_base(servo_controller),
         buttons=get_buttons(),
+        batteries=batteries,
         battery_monitor=battery_monitor,
     )
 
@@ -40,6 +41,7 @@ class Phyto:
     eyes: Eyes
     base: Base
     buttons: Buttons
+    batteries: Batteries
     battery_monitor: BatteryMonitor
 
     fast_walk_speed: float
@@ -51,6 +53,7 @@ class Phyto:
             eyes: Eyes,
             base: Base,
             buttons: Buttons,
+            batteries: Batteries,
             battery_monitor: BatteryMonitor,
             fast_walk_speed: float = 0.1,
             slow_walk_speed: float = 0.05,
@@ -60,6 +63,7 @@ class Phyto:
         self.eyes = eyes
         self.base = base
         self.buttons = buttons
+        self.batteries = batteries
         self.battery_monitor = battery_monitor
 
         self.fast_walk_speed = fast_walk_speed
@@ -72,6 +76,10 @@ class Phyto:
 
         self._mode_toggle_button = self.buttons.button0
         self._walk_speed_button = self.buttons.button1
+
+    @property
+    def can_walk(self) -> bool:
+        return not self.batteries.motor_battery.voltage_is_low
 
     async def run(self) -> None:
         await asyncio.gather(
@@ -118,9 +126,11 @@ class Phyto:
 
     async def _run_base(self) -> None:
         while True:
-            if self.mode == WALK:
+            can_walk = self.can_walk
+
+            if can_walk and self.mode == WALK:
                 await self._walk_mode()
-            elif self.mode == REST:
+            elif not can_walk or self.mode == REST:
                 await self._rest_mode()
             else:
                 raise RuntimeError(f'Unknown mode: {self.mode}')
